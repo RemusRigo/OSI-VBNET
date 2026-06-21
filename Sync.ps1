@@ -11,7 +11,7 @@ if (-not $msg)
     $msg = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 }
 
-$remoteUrl = "https://github.com/RemusRigo/OSI-VBET.git"
+$remoteUrl = "https://github.com/RemusRigo/OSI-VBNET.git"
 
 if (Test-Path ".git")
 {

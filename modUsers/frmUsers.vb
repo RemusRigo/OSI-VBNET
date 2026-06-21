@@ -17,8 +17,8 @@ Public Class frmUsers
    Implements IModuleForm
    <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
    Public Property MainForm As IMainForm Implements IModuleForm.MainForm
-
    Public remoteHost, remoteUser, remotePass As String
+
    Private Sub frmUsers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
       lvUsers.BackColor = Color.FromArgb(224, 234, 213)
 
@@ -29,9 +29,9 @@ Public Class frmUsers
 
       If MainForm IsNot Nothing Then
          If remoteHost <> "" Then
-            MainForm.SetTitle("OSI: Users v1.0 on [" & remoteHost & "]")
+            MainForm.SetTitle("OSI: Users v1.0 on " & remoteHost & remoteHost & ChrW(&H2003) & ChrW(&H2003) & ChrW(&H2003) & " [Remus Rigo]")
          Else
-            MainForm.SetTitle("OSI: Users v1.0")
+            MainForm.SetTitle("OSI: Users v1.0 " & remoteHost & ChrW(&H2003) & ChrW(&H2003) & ChrW(&H2003) & " [Remus Rigo]")
          End If
       End If
 
@@ -55,10 +55,21 @@ Public Class frmUsers
       Dim scope As New ManagementScope(scopePath, myConnection)
 
       Try
+         MainForm.ResetProgress()
          scope.Connect()
          Dim myQuery As New ObjectQuery("SELECT * FROM Win32_UserAccount")
          Dim searcher As New ManagementObjectSearcher(scope, myQuery)
          Dim cnt As Integer = 0
+         ' count properties per object * objects
+         Dim crtAction As Integer = 1
+         Dim objItems = searcher.Get()
+         Dim objCounter As Integer = objItems.Count
+         Dim propsPerObj As Integer = 0
+         If objCounter > 0 Then
+            propsPerObj = objItems.Cast(Of ManagementObject)().First().Properties.Cast(Of PropertyData)().Count(Function(p) p.Name <> "Class" AndAlso p.Name <> "Path")
+         End If
+         Dim totalProps As Integer = propsPerObj * objCounter
+         MainForm.SetProgressMax(totalProps)
 
          For Each obj As ManagementObject In searcher.Get()
             cnt += 1
@@ -73,6 +84,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "FullName") Then
                If (obj("FullName") IsNot Nothing) Then
@@ -82,6 +94,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Domain") Then
                If (obj("Domain") IsNot Nothing) Then
@@ -91,6 +104,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Caption") Then
                If (obj("Caption") IsNot Nothing) Then
@@ -100,6 +114,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Description") Then
                If (obj("Description") IsNot Nothing) Then
@@ -109,6 +124,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Status") Then
                If (obj("Status") IsNot Nothing) Then
@@ -118,6 +134,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "AccountType") Then
                If (obj("AccountType") IsNot Nothing) Then
@@ -142,6 +159,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "LocalAccount") Then
                If (obj("LocalAccount") IsNot Nothing) Then
@@ -151,6 +169,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Disabled") Then
                If (obj("Disabled") IsNot Nothing) Then
@@ -160,6 +179,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Lockout") Then
                If (obj("Lockout") IsNot Nothing) Then
@@ -169,6 +189,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PasswordChangeable") Then
                If (obj("PasswordChangeable") IsNot Nothing) Then
@@ -178,6 +199,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PasswordExpires") Then
                If (obj("PasswordExpires") IsNot Nothing) Then
@@ -187,6 +209,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PasswordRequired") Then
                If (obj("PasswordRequired") IsNot Nothing) Then
@@ -196,6 +219,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "InstallDate") Then
                If (obj("InstallDate") IsNot Nothing) Then
@@ -205,6 +229,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SID") Then
                If (obj("SID") IsNot Nothing) Then
@@ -214,6 +239,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
             If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SIDType") Then
                If (obj("SIDType") IsNot Nothing) Then
@@ -246,6 +272,7 @@ Public Class frmUsers
                   items.Add(item)
                End If
             End If
+            MainForm.SetProgressValue(crtAction) : crtAction += 1
 
          Next
       Catch ex As Exception

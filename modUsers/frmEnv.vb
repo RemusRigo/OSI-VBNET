@@ -1,4 +1,12 @@
-﻿Imports System.ComponentModel
+﻿'--------------------------------------------------------------------------------------------------
+' Win32_Environment class
+' https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-environment
+'
+'    © Remus Rigo
+'       v1.0 2026-06-21
+'--------------------------------------------------------------------------------------------------
+
+Imports System.ComponentModel
 Imports System.Management
 Imports System.Private
 Imports System.Threading
@@ -10,6 +18,7 @@ Public Class frmEnv
    <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
    Public Property MainForm As IMainForm Implements IModuleForm.MainForm
    Public remoteHost, remoteUser, remotePass As String
+
    Private Sub frmEnv_Load(sender As Object, e As EventArgs) Handles MyBase.Load
       lvEnv1.BackColor = Color.FromArgb(224, 234, 213)
       lvEnv2.BackColor = Color.FromArgb(224, 234, 213)
@@ -21,9 +30,9 @@ Public Class frmEnv
 
       If MainForm IsNot Nothing Then
          If remoteHost <> "" Then
-            MainForm.SetTitle("OSI: Environment variables v1.0 on [" & remoteHost & "]")
+            MainForm.SetTitle("OSI: Environment variables v1.0 on " & remoteHost & remoteHost & ChrW(&H2003) & ChrW(&H2003) & ChrW(&H2003) & " [Remus Rigo]")
          Else
-            MainForm.SetTitle("OSI: Environment variables v1.0")
+            MainForm.SetTitle("OSI: Environment variables v1.0 " & remoteHost & ChrW(&H2003) & ChrW(&H2003) & ChrW(&H2003) & " [Remus Rigo]")
          End If
       End If
    End Sub

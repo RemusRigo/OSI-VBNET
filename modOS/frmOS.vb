@@ -1,4 +1,12 @@
-﻿Imports System.ComponentModel
+﻿'--------------------------------------------------------------------------------------------------
+' Win32_OperatingSystem class
+' https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-operatingsystem
+'
+'    © Remus Rigo
+'       v1.0 2026-06-21
+'--------------------------------------------------------------------------------------------------
+
+Imports System.ComponentModel
 Imports System.Management
 Imports System.Private
 Imports System.Runtime.Versioning
@@ -11,7 +19,6 @@ Public Class frmOS
    Implements IModuleForm
    <DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)>
    Public Property MainForm As IMainForm Implements IModuleForm.MainForm
-
    Public remoteHost, remoteUser, remotePass As String
 
    <SupportedOSPlatform("windows")>
@@ -26,9 +33,9 @@ Public Class frmOS
 
       If MainForm IsNot Nothing Then
          If remoteHost <> "" Then
-            MainForm.SetTitle("OSI: OS Info v1.1 on " & remoteHost & " [Remus Rigo]")
+            MainForm.SetTitle("OSI: OS Info v1.1 on " & remoteHost & ChrW(&H2003) & ChrW(&H2003) & ChrW(&H2003) & " [Remus Rigo]")
          Else
-            MainForm.SetTitle("OSI: OS Info v1.1 [Remus Rigo]")
+            MainForm.SetTitle("OSI: OS Info v1.1 " & ChrW(&H2003) & ChrW(&H2003) & ChrW(&H2003) & "[Remus Rigo]")
          End If
       End If
 
@@ -55,13 +62,25 @@ Public Class frmOS
          Dim scope As New ManagementScope(scopePath, myConnection)
 
          Try
+            MainForm.ResetProgress()
             scope.Connect()
             Dim myQuery As New ObjectQuery("SELECT * FROM Win32_OperatingSystem")
             Using searcher As New ManagementObjectSearcher(scope, myQuery)
 
+               ' count properties per object * objects
+               Dim crtAction As Integer = 1
+               Dim objItems = searcher.Get()
+               Dim objCounter As Integer = objItems.Count
+               Dim propsPerObj As Integer = 0
+               If objCounter > 0 Then
+                  propsPerObj = objItems.Cast(Of ManagementObject)().First().Properties.Cast(Of PropertyData)().Count(Function(p) p.Name <> "Class" AndAlso p.Name <> "Path")
+               End If
+               Dim totalProps As Integer = propsPerObj * objCounter
+               MainForm.SetProgressMax(totalProps)
+
                For Each obj As ManagementObject In searcher.Get()
 
-                  items.Add(New ListViewItem({"Version", ""})) '-----------------------------------------
+                  items.Add(New ListViewItem({"Version", ""})) '-----------------------------------
 
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Caption") Then
@@ -69,23 +88,27 @@ Public Class frmOS
                         items.Add(New ListViewItem({"OS", obj("Caption").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Manufacturer") Then
                      If (obj("Manufacturer") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Manufacturer", obj("Manufacturer").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Version") Then
                      If (obj("Version") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Version", obj("Version").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "BuildNumber") Then
                      If (obj("BuildNumber") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Build Number", obj("BuildNumber").ToString()}))
                         Dim osVer, osCode, osRel, osEnd As String
+                        osVer = "" : osCode = "" : osRel = "" : osEnd = ""
                         Select Case obj("BuildNumber")
                            Case "002"
                               osVer = "3.11"
@@ -303,18 +326,21 @@ Public Class frmOS
                         items.Add(New ListViewItem({"End of support", osEnd}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "BuildType") Then
                      If (obj("BuildType") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Build Type", obj("BuildType").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "ServicePackMajorVersion") Then
                      If (obj("ServicePackMajorVersion") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Service Pack Major Version", obj("ServicePackMajorVersion").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "ServicePackMinorVersion") Then
                      If (obj("ServicePackMinorVersion") IsNot Nothing) Then
@@ -353,6 +379,7 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Product Suite", strSuite}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SuiteMask") Then
                      If (obj("SuiteMask") IsNot Nothing) Then
@@ -390,6 +417,7 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Suite Mask", strSuite}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "OSType") Then
                      If (obj("OSType") IsNot Nothing) Then
@@ -528,12 +556,14 @@ Public Class frmOS
                         strType = Nothing
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "OSArchitecture") Then
                      If (obj("OSArchitecture") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Architecture", obj("OSArchitecture").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   items.Add(New ListViewItem({"Instalation", ""})) '-------------------------------------
 
@@ -542,54 +572,63 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Install Date", ConvertToDate(obj("InstallDate").ToString())}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "CSName") Then
                      If (obj("CSName") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Host Name", obj("CSName").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PSComputerName") Then
                      If (obj("PSComputerName") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Computer Name", obj("PSComputerName").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Description") Then
                      If (obj("Description") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Description", obj("Description").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "BootDevice") Then
                      If (obj("BootDevice") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Boot Device", obj("BootDevice").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SystemDevice") Then
                      If (obj("SystemDevice") IsNot Nothing) Then
                         items.Add(New ListViewItem({"SystemDevice", obj("SystemDevice").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "WindowsDirectory") Then
                      If (obj("WindowsDirectory") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Windows Directory", obj("WindowsDirectory").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SystemDirectory") Then
                      If (obj("SystemDirectory") IsNot Nothing) Then
                         items.Add(New ListViewItem({"System Directory", obj("SystemDirectory").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SystemDrive") Then
                      If (obj("SystemDrive") IsNot Nothing) Then
                         items.Add(New ListViewItem({"System Drive", obj("SystemDrive").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   items.Add(New ListViewItem({"Registration", ""})) '------------------------------------
 
@@ -598,18 +637,21 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Organization", obj("Organization").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "RegisteredUser") Then
                      If (obj("RegisteredUser") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Registered User", obj("RegisteredUser").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SerialNumber") Then
                      If (obj("SerialNumber") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Serial Number", obj("SerialNumber").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   items.Add(New ListViewItem({"Memory", ""})) '------------------------------------------
 
@@ -618,36 +660,42 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Total Visible Memory Size", DynamicFormatBytes(obj("TotalVisibleMemorySize").ToString() * 1024)}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "FreePhysicalMemory") Then
                      If (obj("FreePhysicalMemory") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Free Physical Memory", DynamicFormatBytes(obj("FreePhysicalMemory").ToString() * 1024)}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "TotalVirtualMemorySize") Then
                      If (obj("TotalVirtualMemorySize") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Total Virtual Memory Size", DynamicFormatBytes(obj("TotalVirtualMemorySize").ToString() * 1024)}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "FreeVirtualMemory") Then
                      If (obj("FreeVirtualMemory") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Free Virtual Memory", DynamicFormatBytes(obj("FreeVirtualMemory").ToString() * 1024)}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "TotalSwapSpaceSize") Then
                      If (obj("TotalSwapSpaceSize") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Total Swap Space Size", DynamicFormatBytes(obj("TotalSwapSpaceSize").ToString() * 1024)}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "FreeSpaceInPagingFiles") Then
                      If (obj("FreeSpaceInPagingFiles") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Free Space In Paging Files", DynamicFormatBytes(obj("FreeSpaceInPagingFiles").ToString() * 1024)}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   items.Add(New ListViewItem({"Features", " "})) '---------------------------------------
 
@@ -656,48 +704,56 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Data Execution Prevention Available", obj("DataExecutionPrevention_Available").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "DataExecutionPrevention_32BitApplications") Then
                      If (obj("DataExecutionPrevention_32BitApplications") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Data Execution Prevention 32Bit Applications", obj("DataExecutionPrevention_32BitApplications").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "DataExecutionPrevention_Drivers") Then
                      If (obj("DataExecutionPrevention_Drivers") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Data Execution Prevention Drivers", obj("DataExecutionPrevention_Drivers").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "DataExecutionPrevention_SupportPolicy") Then
                      If (obj("DataExecutionPrevention_SupportPolicy") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Data Execution Prevention Support Policy", obj("DataExecutionPrevention_SupportPolicy").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PAEEnabled") Then
                      If (obj("PAEEnabled") IsNot Nothing) Then
                         items.Add(New ListViewItem({"PAE Enabled", obj("PAEEnabled").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "ForegroundApplicationBoost") Then
                      If (obj("ForegroundApplicationBoost") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Foreground Application Boost", obj("ForegroundApplicationBoost").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "MaxNumberOfProcesses") Then
                      If (obj("MaxNumberOfProcesses") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Max Number Of Processes", DynamicFormatBytes(obj("MaxNumberOfProcesses").ToString())}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "MaxProcessMemorySize") Then
                      If (obj("MaxProcessMemorySize") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Max Process Memory Size", DynamicFormatBytes(obj("MaxProcessMemorySize").ToString())}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   items.Add(New ListViewItem({"Regional settings", " "})) '---------------------------------------
 
@@ -706,36 +762,42 @@ Public Class frmOS
                         items.Add(New ListViewItem({"Current Time Zone", obj("CurrentTimeZone").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "LocalDateTime") Then
                      If (obj("LocalDateTime") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Local Date Time", ConvertToDate(obj("LocalDateTime").ToString())}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Locale") Then
                      If (obj("Locale") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Locale", obj("Locale").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "OSLanguage") Then
                      If (obj("OSLanguage") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Language", obj("OSLanguage").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "CodeSet") Then
                      If (obj("CodeSet") IsNot Nothing) Then
                         items.Add(New ListViewItem({"CodeSet", obj("CodeSet").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "CountryCode") Then
                      If (obj("CountryCode") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Country Code", obj("CountryCode").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   items.Add(New ListViewItem({" ", " "})) '----------------------------------------------
 
@@ -744,157 +806,189 @@ Public Class frmOS
                         items.Add(New ListViewItem({"CSDVersion", obj("CSDVersion").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "LastBootUpTime") Then
                      If (obj("LastBootUpTime") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Last BootUp Time", ConvertToDate(obj("LastBootUpTime").ToString())}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Debug") Then
                      If (obj("Debug") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Debug", obj("Debug").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Status") Then
                      If (obj("Status") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Status", obj("Status").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Name") Then
                      If (obj("Name") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Name", obj("Name").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Distributed") Then
                      If (obj("Distributed") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Distributed", obj("Distributed").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "EncryptionLevel") Then
                      If (obj("EncryptionLevel") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Encryption Level", obj("EncryptionLevel").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "LargeSystemCache") Then
                      If (obj("LargeSystemCache") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Large System Cache", obj("LargeSystemCache").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "MUILanguages") Then
                      If (obj("MUILanguages") IsNot Nothing) Then
                         items.Add(New ListViewItem({"MUILanguages", obj("MUILanguages").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "NumberOfLicensedUsers") Then
                      If (obj("NumberOfLicensedUsers") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Number Of Licensed Users", obj("NumberOfLicensedUsers").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "NumberOfProcesses") Then
                      If (obj("NumberOfProcesses") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Number Of Processes", obj("NumberOfProcesses").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "NumberOfUsers") Then
                      If (obj("NumberOfUsers") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Number Of Users", obj("NumberOfUsers").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "OperatingSystemSKU") Then
                      If (obj("OperatingSystemSKU") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Operating System SKU", obj("OperatingSystemSKU").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "OtherTypeDescription") Then
                      If (obj("OtherTypeDescription") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Other Type Description", obj("OtherTypeDescription").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PlusProductID") Then
                      If (obj("PlusProductID") IsNot Nothing) Then
                         items.Add(New ListViewItem({"PlusProductID", obj("PlusProductID").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PlusVersionNumber") Then
                      If (obj("PlusVersionNumber") IsNot Nothing) Then
                         items.Add(New ListViewItem({"PlusVersionNumber", obj("PlusVersionNumber").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "PortableOperatingSystem") Then
                      If (obj("PortableOperatingSystem") IsNot Nothing) Then
                         items.Add(New ListViewItem({"PortableOperatingSystem", obj("PortableOperatingSystem").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Primary") Then
                      If (obj("Primary") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Primary", obj("Primary").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "ProductType") Then
                      If (obj("ProductType") IsNot Nothing) Then
                         items.Add(New ListViewItem({"ProductType", obj("ProductType").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "SizeStoredInPagingFiles") Then
                      If (obj("SizeStoredInPagingFiles") IsNot Nothing) Then
                         items.Add(New ListViewItem({"SizeStoredInPagingFiles", obj("SizeStoredInPagingFiles").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Scope") Then
                      If (obj("Scope") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Scope", obj("Scope").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Path") Then
                      If (obj("Path") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Path", obj("Path").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Options") Then
                      If (obj("Options") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Options", obj("Options").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "Site") Then
                      If (obj("Site") IsNot Nothing) Then
                         items.Add(New ListViewItem({"Site", obj("Site").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "QuantumLength") Then
                      If (obj("QuantumLength") IsNot Nothing) Then
                         items.Add(New ListViewItem({"QuantumLength", obj("QuantumLength").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
                   If obj.Properties.Cast(Of PropertyData)().Any(Function(p) p.Name = "QuantumType") Then
                      If (obj("QuantumType") IsNot Nothing) Then
                         items.Add(New ListViewItem({"QuantumType", obj("QuantumType").ToString()}))
                      End If
                   End If
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
 
+                  ' CreationClassName
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
+                  ' CSCreationClassName
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
+                  ' Name
+                  MainForm.SetProgressValue(crtAction) : crtAction += 1
                Next
             End Using
 

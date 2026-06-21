@@ -1,16 +1,44 @@
-﻿Imports modOS, modUsers, modHW, SharedInterfaces
+﻿Imports System.DirectoryServices.ActiveDirectory
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports modHW, modOS, modUsers, SharedInterfaces
 
 Public Class frmOSI
+   '-----------------------------------------------------------------------------------------------
    Implements IMainForm
 
    Public Sub SetTitle(text As String) Implements IMainForm.SetTitle
       Me.Text = text
    End Sub
 
+   Public Sub ResetProgress() Implements IMainForm.ResetProgress
+      pbLoad.Value = 0
+   End Sub
+
+   Public Sub SetProgressMax(value As Integer) Implements IMainForm.SetProgressMax
+      pbLoad.Maximum = value
+   End Sub
+
+   Public Sub SetProgressValue(value As Integer) Implements IMainForm.SetProgressValue
+      pbLoad.Value = Math.Min(value, pbLoad.Maximum)
+   End Sub
+
+   '-----------------------------------------------------------------------------------------------
+
+   Private pbLoad As rrProgressBar
    Private isRemote As Boolean = False
    Private remoteHost As String = ""
    Private remoteUser As String = ""
    Private remotePass As String = ""
+
+   Public Function DarkenColor(c As Color, percent As Integer) As Color
+      Dim factor As Double = (100 - percent) / 100.0
+      Return Color.FromArgb(
+        c.A,
+        CInt(c.R * factor),
+        CInt(c.G * factor),
+        CInt(c.B * factor)
+    )
+   End Function
 
    Private Function AppHasCommandLineArgs() As Boolean
       Return My.Application.CommandLineArgs.Count > 0
@@ -110,21 +138,30 @@ Public Class frmOSI
       Me.Left = (Screen.PrimaryScreen.WorkingArea.Width - Me.Width) / 2
       Me.Top = (Screen.PrimaryScreen.WorkingArea.Height - Me.Height) / 2
 
+      pbLoad = New rrProgressBar()
+      pbLoad.Dock = DockStyle.Bottom
+      pbLoad.Location = New Point(0, 451)
+      pbLoad.Size = New Size(300, 16)
+      pbLoad.BarColor = DarkenColor(tvOptions.BackColor, 15)
+      pbLoad.BarColorDone = DarkenColor(tvOptions.BackColor, 30)
+      Me.Controls.Add(pbLoad)
+
+
       ' auto-start
       ProcessOptions("OS")
    End Sub
 
-   Private Sub tvOptions_DoubleClick(sender As Object, e As EventArgs) Handles tvOptions.DoubleClick
-      If tvOptions.SelectedNode Is Nothing Then
-         MsgBox("Please select a node first.", MsgBoxStyle.Exclamation, "No Node Selected")
-         Return
-      Else
-         ProcessOptions(tvOptions.SelectedNode.FullPath)
-      End If
-   End Sub
+      Private Sub tvOptions_DoubleClick(sender As Object, e As EventArgs) Handles tvOptions.DoubleClick
+         If tvOptions.SelectedNode Is Nothing Then
+            MsgBox("Please select a node first.", MsgBoxStyle.Exclamation, "No Node Selected")
+            Return
+         Else
+            ProcessOptions(tvOptions.SelectedNode.FullPath)
+         End If
+      End Sub
 
-   Private Sub tvOptions_NodeMouseDoubleClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvOptions.NodeMouseDoubleClick
-      e.Node.Toggle()
-   End Sub
+      Private Sub tvOptions_NodeMouseDoubleClick(sender As Object, e As TreeNodeMouseClickEventArgs) Handles tvOptions.NodeMouseDoubleClick
+         e.Node.Toggle()
+      End Sub
 
-End Class
+   End Class

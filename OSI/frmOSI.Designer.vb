@@ -22,16 +22,18 @@ Partial Class frmOSI
    'Do not modify it using the code editor.
    <System.Diagnostics.DebuggerStepThrough()>
    Private Sub InitializeComponent()
+      components = New ComponentModel.Container()
       Dim TreeNode1 As TreeNode = New TreeNode("OS")
-      Dim TreeNode2 As TreeNode = New TreeNode("Environment Variables")
-      Dim TreeNode3 As TreeNode = New TreeNode("Users")
+      Dim TreeNode2 As TreeNode = New TreeNode("Environment Variables", 1, 1)
+      Dim TreeNode3 As TreeNode = New TreeNode("Users", 2, 2)
       Dim TreeNode4 As TreeNode = New TreeNode("SW", New TreeNode() {TreeNode2, TreeNode3})
-      Dim TreeNode5 As TreeNode = New TreeNode("Disk Drive")
+      Dim TreeNode5 As TreeNode = New TreeNode("Disk Drive", 3, 3)
       Dim TreeNode6 As TreeNode = New TreeNode("HW", New TreeNode() {TreeNode5})
       Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmOSI))
       scMain = New SplitContainer()
       tvOptions = New TreeView()
-      pbLoad = New ProgressBar()
+      imgListNodes = New ImageList(components)
+      pbLoad2 = New ProgressBar()
       CType(scMain, ComponentModel.ISupportInitialize).BeginInit()
       scMain.Panel1.SuspendLayout()
       scMain.SuspendLayout()
@@ -56,39 +58,62 @@ Partial Class frmOSI
       ' 
       tvOptions.BackColor = Color.White
       tvOptions.Dock = DockStyle.Fill
+      tvOptions.Font = New Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+      tvOptions.ImageIndex = 0
+      tvOptions.ImageList = imgListNodes
       tvOptions.Location = New Point(0, 0)
       tvOptions.Margin = New Padding(3, 2, 3, 2)
       tvOptions.Name = "tvOptions"
       TreeNode1.Name = "Node6"
       TreeNode1.Text = "OS"
+      TreeNode2.ImageIndex = 1
       TreeNode2.Name = "Node8"
+      TreeNode2.SelectedImageIndex = 1
       TreeNode2.Text = "Environment Variables"
+      TreeNode3.ImageIndex = 2
       TreeNode3.Name = "Node3"
+      TreeNode3.SelectedImageIndex = 2
       TreeNode3.Text = "Users"
       TreeNode4.Name = "Node5"
       TreeNode4.Text = "SW"
+      TreeNode5.ImageIndex = 3
       TreeNode5.Name = "Node7"
+      TreeNode5.SelectedImageIndex = 3
       TreeNode5.Text = "Disk Drive"
       TreeNode6.Name = "Node0"
       TreeNode6.Text = "HW"
       tvOptions.Nodes.AddRange(New TreeNode() {TreeNode1, TreeNode4, TreeNode6})
+      tvOptions.SelectedImageIndex = 0
       tvOptions.Size = New Size(220, 448)
       tvOptions.TabIndex = 0
       ' 
-      ' pbLoad
+      ' imgListNodes
       ' 
-      pbLoad.Dock = DockStyle.Bottom
-      pbLoad.Location = New Point(0, 451)
-      pbLoad.Name = "pbLoad"
-      pbLoad.Size = New Size(772, 16)
-      pbLoad.TabIndex = 1
+      imgListNodes.ColorDepth = ColorDepth.Depth32Bit
+      imgListNodes.ImageStream = CType(resources.GetObject("imgListNodes.ImageStream"), ImageListStreamer)
+      imgListNodes.TransparentColor = Color.White
+      imgListNodes.Images.SetKeyName(0, "OS.bmp")
+      imgListNodes.Images.SetKeyName(1, "Computer.bmp")
+      imgListNodes.Images.SetKeyName(2, "Users.bmp")
+      imgListNodes.Images.SetKeyName(3, "HDD.bmp")
+      ' 
+      ' pbLoad2
+      ' 
+      pbLoad2.BackColor = Color.LightGray
+      pbLoad2.Dock = DockStyle.Bottom
+      pbLoad2.ForeColor = Color.DarkSeaGreen
+      pbLoad2.Location = New Point(0, 451)
+      pbLoad2.Name = "pbLoad2"
+      pbLoad2.Size = New Size(772, 16)
+      pbLoad2.TabIndex = 1
+      pbLoad2.Visible = False
       ' 
       ' frmOSI
       ' 
       AutoScaleDimensions = New SizeF(7F, 15F)
       AutoScaleMode = AutoScaleMode.Font
       ClientSize = New Size(772, 467)
-      Controls.Add(pbLoad)
+      Controls.Add(pbLoad2)
       Controls.Add(scMain)
       Icon = CType(resources.GetObject("$this.Icon"), Icon)
       Margin = New Padding(3, 2, 3, 2)
@@ -103,6 +128,7 @@ Partial Class frmOSI
 
    Friend WithEvents scMain As SplitContainer
    Friend WithEvents tvOptions As TreeView
-   Friend WithEvents pbLoad As ProgressBar
+   Friend WithEvents pbLoad2 As ProgressBar
+   Friend WithEvents imgListNodes As ImageList
 
 End Class

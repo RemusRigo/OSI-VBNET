@@ -2,7 +2,7 @@
 
   <PropertyGroup>
      <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-     <ApplicationIcon>Res\boo-ghost_109126.ico</ApplicationIcon>
+     <ApplicationIcon>Res\Windows 64x64.ico</ApplicationIcon>
      <Authors>Remus Rigo</Authors>
      <AssemblyName>OSI</AssemblyName>
      <AssemblyVersion>1.0.1.0</AssemblyVersion>
@@ -16,21 +16,33 @@
      <OutputType>WinExe</OutputType>
      <Product>OSI</Product>
      <StartupObject>OSI.My.MyApplication</StartupObject>
-     <TargetFramework>net10.0-windows7.0</TargetFramework>
+     <TargetFramework>net10.0-windows</TargetFramework>
      <UseWindowsForms>true</UseWindowsForms>
      <SolutionDir Condition=" '$(SolutionDir)' == '' ">..\</SolutionDir>
+     <Platforms>x64;x86</Platforms>
 </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>$(SolutionDir)\bin\Debug</OutputPath>
-  </PropertyGroup>
+   <PropertyGroup>
+      <BaseOutputPath>..\bin\</BaseOutputPath>
+      <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+      <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>$(SolutionDir)\bin\Release</OutputPath>
-  </PropertyGroup>
+   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Debug|x86'">
+      <OutputPath>..\bin\Debug\net10.0\x86\</OutputPath>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Debug|x64'">
+      <OutputPath>..\bin\Debug\net10.0\x64\</OutputPath>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Release|x86'">
+      <OutputPath>..\bin\Release\net10.0\x86\</OutputPath>
+   </PropertyGroup>
+   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Release|x64'">
+      <OutputPath>..\bin\Release\net10.0\x64\</OutputPath>
+   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Res\boo-ghost_109126.ico" />
+    <Content Include="Res\Windows 64x64.ico" />
   </ItemGroup>
 
   <ItemGroup>

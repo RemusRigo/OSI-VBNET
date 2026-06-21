@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+   <PropertyGroup>
+      <RootNamespace>modUsers</RootNamespace>
+      <TargetFramework>net10.0-windows7.0</TargetFramework>
+      <UseWindowsForms>true</UseWindowsForms>
+      <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+      <SolutionDir Condition=" '$(SolutionDir)' == '' ">..\</SolutionDir>
+   </PropertyGroup>
+
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <OutputPath>$(SolutionDir)\bin\Debug</OutputPath>
+   </PropertyGroup>
+
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <OutputPath>$(SolutionDir)\bin\Release</OutputPath>
+   </PropertyGroup> 
+   
+   <ItemGroup>
+      <Import Include="System.Data" />
+      <Import Include="System.Drawing" />
+      <Import Include="System.Windows.Forms" />
+   </ItemGroup>
+
+   <ItemGroup>
+      <PackageReference Include="System.Management" Version="9.0.8" />
+   </ItemGroup>
+
+   <ItemGroup>
+     <ProjectReference Include="..\SharedInterfaces\SharedInterfaces.vbproj" />
+   </ItemGroup>
+
+</Project>

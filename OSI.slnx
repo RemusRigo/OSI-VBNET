@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="modHW/modHW.vbproj" />
+  <Project Path="modOS/modOS.vbproj" />
+  <Project Path="modUsers/modUsers.vbproj" />
+  <Project Path="OSI/OSI.vbproj" />
+  <Project Path="SharedInterfaces/SharedInterfaces.vbproj" Id="ce34b36b-cd8e-4cc6-9c7f-10a41647e496" />
+</Solution>

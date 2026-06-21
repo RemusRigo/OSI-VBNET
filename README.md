@@ -13,7 +13,7 @@ A Windows Operating System Information project
 
 ## Installation
 
-You must install .NET Runtime 9 x64 and then just run Whisperer.exe
+You must install .NET Runtime 10 and then just run OSI.exe
 
 
 
@@ -25,6 +25,12 @@ You must install .NET Runtime 9 x64 and then just run Whisperer.exe
   * Software\Environment Variables
   * Software\Users
   * Hardware\Disk Drive
+
+
+
+## Statistics
+
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/RemusRigo/OSI-VBNET/total)
 
 
 

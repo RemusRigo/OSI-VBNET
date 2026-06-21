@@ -1,6 +1,5 @@
 <Solution>
   <Configurations>
-    <Platform Name="Any CPU" />
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
@@ -21,7 +20,6 @@
     <Platform Solution="*|x86" Project="x86" />
   </Project>
   <Project Path="SharedInterfaces/SharedInterfaces.vbproj" Id="ce34b36b-cd8e-4cc6-9c7f-10a41647e496">
-    <Platform Solution="*|x64" Project="x64" />
     <Platform Solution="Debug|x86" Project="x64" />
     <Platform Solution="Release|x86" Project="x86" />
   </Project>

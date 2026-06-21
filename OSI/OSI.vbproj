@@ -24,14 +24,13 @@
 
    <PropertyGroup>
       <BaseOutputPath>..\bin\</BaseOutputPath>
-      <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
    </PropertyGroup>
 
-   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Debug|x86'">
+  <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Debug|x86'">
       <OutputPath>..\bin\Debug\net10.0\x86\</OutputPath>
-   </PropertyGroup>
-   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Debug|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Debug|x64'">
       <OutputPath>..\bin\Debug\net10.0\x64\</OutputPath>
    </PropertyGroup>
    <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-windows' AND '$(Configuration)|$(Platform)'=='Release|x86'">

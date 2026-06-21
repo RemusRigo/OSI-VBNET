@@ -30,6 +30,8 @@ You must install .NET Runtime 9 x64 and then just run Whisperer.exe
 
 ## Roadmap
 
+* 2026-06-21: Add: Hardware\Disk Drive
+* 2026-06-20: Add: Progress Bar with percent & adjusted the code
 * 2026-06-19: Add: command line parameters (replaced controls on the form)
 * 2025-11-20: Fix: some warnings about platform compatibility
 * 2025-11-20: Add: Version/Codename/Release Date/End of support

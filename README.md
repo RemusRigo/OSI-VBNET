@@ -31,6 +31,7 @@ You must install .NET Runtime 10 and then just run OSI.exe
 ## Statistics
 
 ![status](https://img.shields.io/badge/status-in%20progress-orange)
+<br>
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/RemusRigo/OSI-VB.NET/total)
 
 

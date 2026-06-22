@@ -3,31 +3,31 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="modHW/modHW.vbproj">
+  <Project Path="OSI/modHW/modHW.vbproj">
     <Platform Solution="Debug|x64" Project="x64" />
     <Platform Solution="Release|x64" Project="x64" />
     <Platform Solution="Debug|x86" Project="x86" />
     <Platform Solution="Release|x86" Project="x86" />
   </Project>
-  <Project Path="modOS/modOS.vbproj">
+  <Project Path="OSI/modOS/modOS.vbproj">
     <Platform Solution="Debug|x64" Project="x64" />
     <Platform Solution="Release|x64" Project="x64" />
     <Platform Solution="Debug|x86" Project="x86" />
     <Platform Solution="Release|x86" Project="x86" />
   </Project>
-  <Project Path="modUsers/modUsers.vbproj">
+  <Project Path="OSI/modUsers/modUsers.vbproj">
     <Platform Solution="Debug|x64" Project="x64" />
     <Platform Solution="Release|x64" Project="x64" />
     <Platform Solution="Debug|x86" Project="x86" />
     <Platform Solution="Release|x86" Project="x86" />
   </Project>
-  <Project Path="OSI/OSI.vbproj">
+  <Project Path="OSI/OSI/OSI.vbproj">
     <Platform Solution="Debug|x64" Project="x64" />
     <Platform Solution="Release|x64" Project="x64" />
     <Platform Solution="Debug|x86" Project="x86" />
     <Platform Solution="Release|x86" Project="x86" />
   </Project>
-  <Project Path="SharedInterfaces/SharedInterfaces.vbproj" Id="ce34b36b-cd8e-4cc6-9c7f-10a41647e496">
+  <Project Path="OSI/SharedInterfaces/SharedInterfaces.vbproj" Id="ce34b36b-cd8e-4cc6-9c7f-10a41647e496">
     <Platform Solution="Debug|x64" Project="x64" />
     <Platform Solution="Release|x64" Project="x64" />
     <Platform Solution="Debug|x86" Project="x86" />
